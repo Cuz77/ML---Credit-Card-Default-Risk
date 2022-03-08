@@ -1,9 +1,8 @@
 #---------------------------------------------------------------------------------------#
 #                                                                                       #
-#                                PREPARE THE DATA SET                                   #
+#                            INTRODUCTION AND OBJECTIVES                                #
 #                                                                                       #
 #---------------------------------------------------------------------------------------#
-
 
 #----------------------------------------------->
 # This project originates from the kaggle's data set "Credit Card Approval Prediction" that can be found under this link: 
@@ -11,21 +10,19 @@
 # contains credit card holders data with corresponding credit records containing personal information along with the status 
 # of the credit (e.g. whether the customer defaults and for how long). 
 # 
-# The goal of this project is to predict whether the applicant is going to be in risk of default based on provided features.
-# Due to economic hardships, the bank wants to be sure we limit the credit line to customers who may be at risk or at least
-# mark them for further manual screening.
-# Later, we will have to define what a risky customer is for our purpose.
+# The goal of this project is to predict whether the applicant is going to be at risk of default based on provided features.
+# Due to economic hardships, the bank wants to introduce an additional vetting step to potentially limit credit lines for 
+# customers who may be at risk of default in the future.
+# Later, we will define what constitutes a risky customer for the purpose of this project.
 #
-
-
-#
-# GITHUB GITHUB GITHUB GITHUB GITHUB GITHUB GITHUB GITHUB GITHUB GITHUB GITHUB GITHUB GITHUB GITHUB
-#
-#
-
-
-
+# The project files can be found under the following address: https://github.com/Cuz77/ML-Credit-Card-Default-Risk
 #----------------------------------------------->
+
+#---------------------------------------------------------------------------------------#
+#                                                                                       #
+#                                PREPARE THE DATA SET                                   #
+#                                                                                       #
+#---------------------------------------------------------------------------------------#
 
 #----------------------------------------------->
 # Load and install libraries if applicable
@@ -34,6 +31,7 @@
 if(!require(caret)) install.packages("caret", repos = "http://cran.us.r-project.org")
 if(!require(gridExtra)) install.packages("gridExtra", repos = "http://cran.us.r-project.org")
 if(!require(kableExtra)) install.packages("kableExtra", repos = "http://cran.us.r-project.org")
+if(!require(randomForest)) install.packages("randomForest", repos = "http://cran.us.r-project.org")
 if(!require(smotefamily)) install.packages("smotefamily", repos = "http://cran.us.r-project.org")
 if(!require(this.path)) install.packages("this.path", repos = "http://cran.us.r-project.org")
 if(!require(tidyverse)) install.packages("tidyverse", repos = "http://cran.us.r-project.org")
@@ -41,13 +39,13 @@ if(!require(tidyverse)) install.packages("tidyverse", repos = "http://cran.us.r-
 library(caret)
 library(gridExtra)
 library(kableExtra)
+library(randomForest)
 library(smotefamily)
 library(this.path)
 library(tidyverse)
 
 setwd(this.path::this.dir())       # set the working directory to this file's folder
 load(file="credit_data.rda")       # load the data set
-
 
 #---------------------------------------------------------------------------------------#
 #                                                                                       #

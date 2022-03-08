@@ -32,9 +32,9 @@ load(file="credit_data.rda")
 # INTRODUCTION
 
 
-This project originates from the kaggle's dataset "Credit Card Approval Prediction" that can be found under the following address: https://www.kaggle.com/rikdifos/credit-card-approval-prediction. The data has been saved in the 'credit_data.rda' file containing credit card history with corresponding records listing personal information along with the status of the credit (e.g. whether the customer defaults and for how long).
+This project originates from the kaggle's dataset "Credit Card Approval Prediction" that can be found under the following address: https://www.kaggle.com/rikdifos/credit-card-approval-prediction. The data has been saved in the 'credit_data.rda' file containing credit card history with corresponding records listing personal information along with the status of the credit (i.e. whether the customer defaults and for how long).
 
-The goal of this project is to predict whether the applicant is going to be at risk of default based on provided features. Due to economic hardships, the bank wants to introduce an additional vetting step to limit credit lines to customers who may be at risk.
+The goal of this project is to predict whether the applicant is going to be at risk of default based on the provided features. Due to economic hardships, the bank wants to introduce an additional vetting step to potentially limit credit lines for customers who may be at risk of default in the future. Later, we will define what constitutes a risky customer for the purpose of this project.
 
 
 # SUMMARY
@@ -56,7 +56,7 @@ t(summary(data)[c(1,3,4,6),]) %>% kbl()
 ```
 
 
-Considering that ID is not informative and STATUS and MONTHS_BALANCE are used for rating customers the model will try to predict, we are left with 17 features for the prediction model. The data set contains multiple records for different months recorded per customer. There are `r format(length(unique(data$ID)), big.mark = ",")` unique credit holders with most of them having a credit line open between 3 and 13 months.
+Considering that ID is not informative and STATUS and MONTHS_BALANCE are used for rating customers the model will try to predict, we are left with 17 features for the prediction model. The data set contains multiple records for different months recorded per customer. There are `r format(length(unique(data$ID)), big.mark = ",")` unique credit holders with most of them having a credit line open from 3 to 13 months.
 
 
 ```{r credit_length, echo=FALSE}
@@ -152,7 +152,7 @@ To summarize, we have observed the following features groups to work with:
 
 + 7 binary variables (gender, car ownership, realty ownership, mobile phone, work phone, phone (other), and email)
 + 5 categorical variables (income source, education level, marital status, housing conditions, and occupation)
-+ 5 discrete and continuous numeric variables (family size, number of children, income, days from birth, and days employed)
++ 5 discrete or continuous numeric variables (family size, number of children, income, days from birth, and days employed)
 
 
 ## Binary features
@@ -427,7 +427,7 @@ In conclusion, both groups of customers (risky vs not-risky) are very similar de
 
 In order to construct a successful model, the data set has to be slightly transformed. First, binary categories stored as characters should be converted to Boolean factors ({0, 1}). We won't do it here because those will be dropped as they're not informative for the prediction model. Ultimately, the marginal utility from multiple features is decreasing as some of them are correlated or show low deviation across classes.
 
-We do, however, want to employ a technique called one-hot encoding for categorical features. Since we cannot declare that housing situation or occupation can be ordered on a scale, and even if we could somehow order them (e.g. education level), they wouldn't necessarily have the same distance from each other (i.e. an academic degree is not equal twice as much as a high-school diploma). Those features have to be split between columns holding a binary value for each category (i.e. for education level each column for a different type of education will hold 0 except for one specific to the given customer).
+We do, however, want to employ a technique called **one-hot encoding** for categorical features. Since we cannot declare that housing situation or occupation can be ordered on a scale, and even if we could somehow order them (e.g. education level), they wouldn't necessarily have the same distance from each other (i.e. an academic degree is not equal twice as much as a high-school diploma). Those features have to be split between columns holding a binary value for each category (i.e. for education level each column for a different type of education will hold 0 except for one specific to the given customer).
 
 
 ```{r one-hot, warning=FALSE, message=FALSE}
@@ -475,7 +475,7 @@ clean_dataset <- clean_dataset %>%
 ```
 
 
-The data set has to be split in order to avoid overfitting. The absolute minimum is to split the data between train set and test set, however, we will create three sets, the last one being a validation set. It will be used to evaluate the final model and confirm that the outcome was not obtained by pure chance. We will end up with three data set:
+The data set has to be split in order to avoid overfitting. The absolute minimum is to split the data between train set and test set, however, we will create three sets, the last one being a validation set. It will be used to evaluate the final model and confirm that the outcome was not obtained by pure chance. We will end up with three data sets:
 
 + train set - consisting of 80% of all observations - used for model training
 + test set - consisting of 10% of all observations - used for model evaluation
@@ -505,15 +505,15 @@ validation_set <- slice(temp_set, -test_index) # 10% validation set
 
 The question remains, on what basis our models should be evaluated? Because the data set is imbalanced (i.e. one class makes up under 2% of the population), overall accuracy cannot be used. Otherwise, it is tempting to assign all predictions to the majority class, automatically yielding over 98% accuracy. This approach would naturally defeat the purpose of creating any machine learning models. Therefore, we will look at three different measures:
 
-+ F1 - the harmonic mean of precision and recall. It is often used with imbalanced data sets.
++ **F1** - the harmonic mean of precision and recall. It is often used with imbalanced data sets.
 
 $$F_1 = 2*\frac{precision*recall}{precision+recall}$$
 
-+ Specificity - because we know that the positive class denotes risky customers (the minority class), some models might be biased towards predicting most negative classes as positives when increasing recall. Therefore, we will also monitor specificity.
++ **Specificity** - because we know that the positive class denotes risky customers (the minority class), some models might be biased towards predicting most negative classes as positives when increasing recall. Therefore, we will also monitor specificity.
 
 $$Specificity = \frac{True Negative}{True Negative+False Positive}$$
 
-+ Balanced accuracy - as mentioned above, the accuracy metric is not viable for this task, thus we will replace it with balanced accuracy which performs better with imbalanced data.
++ **Balanced accuracy** - as mentioned above, the accuracy metric is not viable for this task, thus we will replace it with balanced accuracy which performs better with imbalanced data.
 
 $$Balanced Accuracy = \frac{sensitivity + specificity}{2}$$
 
@@ -568,7 +568,7 @@ tune_plot %>%
 ```
 
 
-The above chart shows the best cutoff value for the linear model is 0.017. Lower or higher cutoffs skew predictions towards one class or another. Higher cutoff lowers specificity (black line) while simultaneously increasing balanced accuracy (red line) because the model tends to assign more customers to the negative class (not a risky customer).
+The above chart shows the best cutoff value for the linear model is 0.017. Lower or higher cutoffs skew predictions towards one class or another. Higher cutoff lowers specificity (black line) while simultaneously increasing F1 (red line) because the model tends to assign more customers to the negative class (not a risky customer).
 
 How does the model perform against this cutoff?
 
