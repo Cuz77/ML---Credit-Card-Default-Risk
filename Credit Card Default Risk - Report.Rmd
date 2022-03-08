@@ -392,7 +392,6 @@ Finally, there are also characteristics corresponding to family sizes and number
 
 ```{r family plots, echo=FALSE, warning=FALSE, message=FALSE}
 
-
 children_plot <- scoring_data %>%
   ggplot(aes(RISKY, CNT_CHILDREN, fill=as.factor(RISKY))) +
   scale_y_continuous(limits=c(0, 20)) +
@@ -402,7 +401,6 @@ children_plot <- scoring_data %>%
   scale_fill_manual(values=c("#53d1ee", "#fed20c")) +
   labs(y="", x="") +
   scale_x_continuous(breaks=c(0,1), labels=c("NOT_RISKY", "RISKY"))
-
 
 family_plot <- scoring_data %>%
   ggplot(aes(RISKY, CNT_FAM_MEMBERS, fill=as.factor(RISKY))) +
@@ -414,7 +412,6 @@ family_plot <- scoring_data %>%
   labs(y="", x="") +
   scale_x_continuous(breaks=c(0,1), labels=c("NOT_RISKY", "RISKY"))
   
-
 grid.arrange(children_plot, family_plot, nrow=1)
 
 ```
@@ -502,7 +499,6 @@ test_index <- createDataPartition(temp_set$RISKY, p=0.5, list=FALSE)
 train_set <- slice(clean_dataset, train_index) # 80% train data set                           
 test_set <- slice(temp_set, test_index)        # 10% test set                                  
 validation_set <- slice(temp_set, -test_index) # 10% validation set                              
-
 
 ```
 
